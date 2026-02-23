@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>St. Mary's Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="splash-screen" class="splash-active">
+        <div class="splash-logo">
+            <div class="red-circle">
+                <i class="fa-solid fa-cross"></i>
+                <span class="circle-text">ST. MARY'S<br>ENGLISH MEDIUM<br>SCHOOL</span>
+            </div>
+            <h1>ST. MARY'S</h1>
+            <p class="location">Tajpur (Samastipur)</p>
+        </div>
+        <p class="quote">"Education is the most powerful weapon which you can use to change the world."</p>
+    </div>
+
+    <header id="main-header" class="hidden">
+        <div class="header-content">
+            <i class="fa-solid fa-school"></i>
+            <h2 id="header-title">St. Mary's School</h2>
+            <span id="role-badge" class="badge"></span>
+        </div>
+    </header>
+
+    <main id="app-container">
+
+        <section id="login-screen" class="screen hidden">
+            <div class="login-box">
+                <div class="building-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <h1>Welcome to Portal</h1>
+                <p class="subtitle">Secure access for St. Mary's students and staff.</p>
+                
+                <div class="input-group">
+                    <label>GMAIL ADDRESS</label>
+                    <input type="email" placeholder="enter.your@gmail.com" id="email-input">
+                </div>
+                
+                <button class="btn google-btn" onclick="processLogin()">
+                    <i class="fa-brands fa-google"></i> Continue with Google
+                </button>
+                
+                <p class="demo-text" style="margin-top: 20px;">Administrative Access:</p>
+                <button class="btn admin-btn" onclick="goToAdminRegistration()">Login as Admin</button>
+            </div>
+        </section>
+
+        <section id="admin-register-screen" class="screen hidden">
+            <div class="profile-box">
+                <h2>Admin Verification</h2>
+                <div class="role-badge-box" style="background: var(--red-alert);">RESTRICTED ACCESS</div>
+                
+                <div class="input-row"><div class="input-group full-width"><label>Admin Name</label><input type="text" id="admin-name" placeholder="Enter Name"></div></div>
+                <div class="input-row"><div class="input-group full-width"><label>Father's Name</label><input type="text" id="admin-father" placeholder="Enter Father's Name"></div></div>
+                <div class="input-row"><div class="input-group full-width"><label>Date of Birth</label><input type="date" id="admin-dob"></div></div>
+                <div class="input-row"><div class="input-group full-width"><label>Security Code</label><input type="password" id="admin-code" placeholder="16-digit access code"></div></div>
+
+                <button class="btn admin-btn" onclick="verifyAndLoginAdmin()">Verify & Proceed</button>
+                <button class="btn google-btn" onclick="showScreen('login-screen')">Cancel</button>
+            </div>
+        </section>
+
+        <section id="profile-screen" class="screen hidden">
+            <div class="profile-box">
+                <h2>Complete Profile</h2>
+                <div class="role-badge-box">STUDENT</div>
+                
+                <div class="input-row"><div class="input-group full-width"><label>Full Name</label><input type="text" id="prof-name" placeholder="Enter Name"></div></div>
+                <div class="input-row split">
+                    <div class="input-group">
+                        <label>Class/Batch</label>
+                        <select id="prof-class">
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Roll Number</label><input type="number" id="prof-roll" placeholder="e.g. 15"></div>
+                </div>
+                <div class="input-row"><div class="input-group full-width"><label>Father's Name</label><input type="text" id="prof-father"></div></div>
+                <div class="input-row"><div class="input-group full-width"><label>Mother's Name</label><input type="text" id="prof-mother"></div></div>
+
+                <button class="btn google-btn" onclick="submitStudentProfile()">Register Profile</button>
+            </div>
+        </section>
+
+        <section id="pending-screen" class="screen hidden">
+            <div class="profile-box center-text">
+                <div class="building-icon" style="background: #fff3cd; color: #856404;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <h2>Approval Pending</h2>
+                <p class="subtitle" style="margin-top: 10px;">Your request to join <strong id="pending-class-display"></strong> has been sent to your class teacher. Please wait for them to confirm your details.</p>
+                <button class="btn google-btn" onclick="signOut()" style="margin-top: 20px;">Return to Login</button>
+            </div>
+        </section>
+
+        <section id="dashboard-screen" class="screen hidden">
+            <div class="section-header">Batches / Groups</div>
+            <div class="batch-list" id="batch-list-container"></div>
+        </section>
+
+        <section id="requests-screen" class="screen hidden">
+            <div class="section-header">Pending Join Requests</div>
+            <div class="batch-list" id="requests-list-container">
+                </div>
+        </section>
+
+        <section id="staff-screen" class="screen hidden">
+            <div class="section-header">Assign Class Teacher</div>
+            <div class="profile-box" style="margin-top: 10px;">
+                <p class="subtitle" style="text-align: left;">Add teacher details. Once added, they can simply "Login with Google" using that email.</p>
+                <div class="input-row"><div class="input-group full-width"><label>Teacher's Full Name</label><input type="text" id="staff-name"></div></div>
+                <div class="input-row"><div class="input-group full-width"><label>Teacher's Gmail Address</label><input type="email" id="staff-email"></div></div>
+                <div class="input-row split">
+                    <div class="input-group">
+                        <label>Assigned Class</label>
+                        <select id="staff-class">
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>DOB</label><input type="date" id="staff-dob"></div>
+                </div>
+                <button class="btn admin-btn" onclick="registerTeacher()">Create Teacher Account</button>
+            </div>
+        </section>
+
+        <section id="chat-screen" class="screen hidden">
+            <div class="chat-header">
+                <button onclick="showScreen('dashboard-screen')" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <div>
+                    <h3 id="chat-room-name">Class 10</h3>
+                    <p style="font-size: 0.7rem; color: #ddd;">Official Batch Group</p>
+                </div>
+            </div>
+            <div class="chat-messages" id="chat-messages-container">
+                <div class="info-banner">Messages sent by the Principal or Class Teacher will appear here. Students cannot reply.</div>
+            </div>
+            <div class="chat-input-area" id="chat-input-area">
+                <button class="icon-btn"><i class="fa-solid fa-paperclip"></i></button>
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button class="icon-btn send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </section>
+
+        <section id="jarvis-screen" class="screen hidden">
+            <div class="jarvis-header">
+                <div class="jarvis-icon"><i class="fa-solid fa-robot"></i></div>
+                <h3>JARVIS AI</h3>
+                <p>ST. MARY'S AI ASSISTANT</p>
+            </div>
+            <div class="chat-messages" id="jarvis-messages-container">
+                <div class="message received flex-message">
+                    <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="text">Hello Sir! I am Jarvis, St. Mary's AI. How can I assist you today?</div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="jarvis-input" placeholder="Message Jarvis..." onkeypress="handleJarvisEnter(event)">
+                <button class="icon-btn send-btn" onclick="askJarvis()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </section>
+
+        <section id="my-profile-screen" class="screen hidden">
+            <div class="chat-header">
+                <button onclick="showScreen('dashboard-screen')" class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <h3>My Profile</h3>
+            </div>
+            <div class="profile-box" style="margin-top: 20px; text-align: center; max-height: calc(100vh - 150px); overflow-y: auto;">
+                <div class="dp-container">
+                    <img id="user-dp-preview" src="https://ui-avatars.com/api/?name=User&background=27428f&color=fff&size=100" alt="DP">
+                    <input type="file" id="dp-upload" accept="image/*" onchange="updateDP(event)" style="display: none;">
+                    <label for="dp-upload" class="dp-edit-btn"><i class="fa-solid fa-camera"></i></label>
+                </div>
+                <h2 id="display-user-name" style="margin-top: 15px;">User Name</h2>
+                <div class="role-badge-box" id="display-user-role" style="display: inline-block; padding: 5px 15px; margin-top: 10px;">ROLE</div>
+                <div id="user-details-container" style="text-align: left; margin-top: 20px;"></div>
+                
+                <button class="btn google-btn" onclick="signOut()" style="margin-top: 20px; color: var(--red-alert); border-color: var(--red-alert);">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <nav id="bottom-nav" class="hidden">
+        <a href="#" class="nav-item nav-batches" onclick="showScreen('dashboard-screen')">
+            <i class="fa-solid fa-users"></i><span>Batches</span>
+        </a>
+        <a href="#" class="nav-item nav-requests hidden" onclick="showScreen('requests-screen'); loadRequests();">
+            <i class="fa-solid fa-check-double"></i><span>Requests</span>
+        </a>
+        <a href="#" class="nav-item nav-staff hidden" onclick="showScreen('staff-screen')">
+            <i class="fa-solid fa-user-tie"></i><span>Staff</span>
+        </a>
+        <a href="#" class="nav-item nav-jarvis" onclick="showScreen('jarvis-screen')">
+            <i class="fa-solid fa-robot"></i><span>Jarvis</span>
+        </a>
+        <a href="#" class="nav-item nav-profile" onclick="showScreen('my-profile-screen'); loadMyProfile();">
+            <i class="fa-solid fa-user"></i><span>Profile</span>
+        </a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+  </html>
+  
